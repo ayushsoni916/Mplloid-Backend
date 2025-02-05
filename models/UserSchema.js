@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
         type:String,
         require:true,
         unique:true,
+    },
+    deviceKey:{
+        type:String,
+        require:true
     }
 } , {timestamps:true})
 
