@@ -29,7 +29,7 @@ async function createUser(req, res) {
         }
 
         // Check if the email or phone already exists
-        const existUser = await User.findOne({ 
+        const existUser = await User.findOne({
             $or: [{ email }, { phone }]
         });
 
@@ -43,7 +43,6 @@ async function createUser(req, res) {
         // Generate JWT token
         const token = generateToken(newUser._id);
 
-        console.log(token)
 
         return res.status(201).json({ message: "User created successfully", user: newUser, token });
 
@@ -53,4 +52,38 @@ async function createUser(req, res) {
     }
 }
 
-module.exports = createUser;
+async function login(req, res) {
+    try {
+        const { phone, key } = req.body
+
+        if (!phone || !key) {
+            return res.status(400).json({ message: "Phone number and Key is required" });
+        }
+
+        if(!isValidKey(key))
+            return res.status(400).json({message:"Invalid Key"})
+
+        const ourUser = await User.findOne({ phone });
+
+        if (!ourUser)
+            return res.status(400).json({ message: "User not found" });
+
+        const token = generateToken(ourUser._id)
+
+        return res.status(200).json({
+            message: "Login Successfully",
+            user: ourUser,
+            token
+        })
+    }
+    catch (error) {
+        console.error("Error in loginUser:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
+module.exports = {
+    createUser,
+    login
+};

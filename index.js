@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json())
 
 //ROutes 
-app.use("/api/signin",userRoute)
+app.use("/api/user",userRoute)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT , ()=>console.log(`server is listening on ${PORT}`))
