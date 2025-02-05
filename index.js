@@ -3,6 +3,7 @@ const dotenv = require("dotenv")
 const connectDB = require("./config/db")
 const userRoute = require("./routes/userRoute")
 const bannerRoute = require("./routes/bannerRoute")
+const notificationRoute = require("./routes/notificationRoute")
 
 dotenv.config()
 
@@ -18,6 +19,9 @@ app.use("/api/user",userRoute)
 
 //banner route
 app.use("/api/banner",bannerRoute)
+
+//notification
+app.use("/api/notification",notificationRoute)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT , ()=>console.log(`server is listening on ${PORT}`))
