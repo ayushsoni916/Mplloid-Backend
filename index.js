@@ -9,7 +9,7 @@ const examRouter = require("./routes/examsRouting")
 const CourseRouter = require("./routes/course.route")
 
 dotenv.config()
-console.log("mongoUrl",process.env.MONGO_URL)
+
 connectDB().then(()=>console.log("db connected")).catch((err)=>console.log("err",err))
 
 const app = express();
