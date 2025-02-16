@@ -87,7 +87,10 @@ async function getSubCourses(req, res) {
         }
 
         // Extract subCourse names from the populated subCourses array
-        const subCourseNames = course.subCourses.map(subCourse => subCourse.name);
+        const subCourseNames = course.subCourses.map(subCourse => ({
+            name: subCourse.name,
+            id: subCourse._id
+        }));
 
         // Return the array of sub-course names
         res.status(200).json({ subCourseNames });
@@ -97,10 +100,55 @@ async function getSubCourses(req, res) {
     }
 }
 
+async function deleteSubCourse(req, res) {
+    try {
+        const { subCourseId } = req.query;
+        console.log("subCourseId->", subCourseId);
 
+        if (!subCourseId)
+            return res.status(404).json({ message: "sub course not found!!" })
+
+        const subCourse = await subCoursesModel.findByIdAndDelete(subCourseId)
+        if (!subCourse)
+            return res.status(404).json({ message: "sub course not found!!" })
+
+        await coursesModel.updateMany(
+            { subCourses: subCourseId },
+            { $pull: { subCourses: subCourseId } }
+        )
+        return res.status(200).json({ message: "Sub course deleted successfully!" });
+
+    }
+    catch (err) {
+        console.error("err", err);
+        res.status(500).json({ message: 'Error fetching sub-courses' });
+    }
+}
+
+async function deleteCourse(req, res) {
+    try {
+        const { courseId } = req.query;
+        console.log("courseId->", courseId)
+        if (!courseId)
+            return res.status(404).json({ message: "course not found!!" })
+
+        const course = await coursesModel.findOneAndDelete({ _id: courseId })
+
+        if (!course)
+            return res.status(404).json({ message: "course not found!!" })
+            
+        return res.status(200).json({ message: "course Deleted successfully!!" })    
+    }
+    catch (err) {
+        console.error("err", err);
+        res.status(500).json({ message: 'Error fetching sub-courses' });
+    }
+}
 
 module.exports = {
     addCourse,
     getCourses,
-    getSubCourses
+    getSubCourses,
+    deleteSubCourse,
+    deleteCourse
 }

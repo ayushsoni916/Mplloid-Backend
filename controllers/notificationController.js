@@ -24,7 +24,7 @@ async function getNotification(req, res) {
 
         const notifications = (await notificationModel.find()).reverse()
 
-        return res.status(201).json({ message: "Notification list", notifications:notifications })
+        return res.status(200).json({ message: "Notification list", notifications:notifications })
     }
     catch (error) {
         console.log("error", error)
